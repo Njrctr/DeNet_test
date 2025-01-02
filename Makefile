@@ -1,8 +1,8 @@
 build:
-	docker-compose build walletter-backend
+	docker-compose build denet-backend
 
 run:
-	docker-compose up walletter-backend --force-recreate
+	docker-compose up denet-backend --force-recreate
 
 test:
 	go test -v ./...
@@ -17,4 +17,4 @@ swag:
 	swag init -g cmd/main.go
 
 database:
-	sudo docker run --name=walletter-db -e POSTGRES_PASSWORD='qwerty' -p 5436:5432 -d --rm postgres
+	sudo docker run --name=denet-db -e POSTGRES_PASSWORD='qwerty' -p 5436:5432 -d --rm postgres
