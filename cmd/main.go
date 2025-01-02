@@ -17,6 +17,17 @@ import (
 	"github.com/spf13/viper"
 )
 
+// @title Wallet API
+// @version 1.0
+// @description API Server for Wallet
+
+// @host localhost:8080
+// @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 func main() {
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("Ошибка инициализации конфига: %v", err)

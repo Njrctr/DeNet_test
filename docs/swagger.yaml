@@ -1,0 +1,204 @@
+basePath: /
+definitions:
+  handlers.errorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  handlers.leaderboardResponce:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+    type: object
+  models.SignInInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.SignUpInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.User:
+    properties:
+      balance:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Server for Wallet
+  title: Wallet API
+  version: "1.0"
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: login
+      operationId: login
+      parameters:
+      - description: login data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: SignIn
+      tags:
+      - Auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: create account
+      operationId: create-account
+      parameters:
+      - description: account data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignUpInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: SignUp
+      tags:
+      - Auth
+  /users/{id}/status:
+    get:
+      consumes:
+      - application/json
+      description: get user
+      operationId: get-user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get User
+      tags:
+      - Users
+  /users/leaderboard:
+    get:
+      consumes:
+      - application/json
+      description: get users leaderboad
+      operationId: get-users-leaderboad
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.leaderboardResponce'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Users Leaderboad
+      tags:
+      - Users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

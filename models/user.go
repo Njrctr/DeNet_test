@@ -1,7 +1,9 @@
 package models
 
 type User struct {
-	ID int `json:"-" db:"id"`
+	ID       int    `json:"id" db:"id"`
+	Username string `json:"username" db:"username"`
+	Balance  int    `json:"balance" db:"balance"`
 }
 
 type SignUpInput struct {

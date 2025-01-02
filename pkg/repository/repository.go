@@ -11,12 +11,19 @@ type Autorization interface {
 	GetUser(username, password string) (models.User, error)
 }
 
+type User interface {
+	GetUserInfo(userId int) (models.User, error)
+	GetUsersLeaderboard() ([]models.User, error)
+}
+
 type Repository struct {
 	Autorization
+	User
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Autorization: postgres.NewAuthPostgres(db),
+		User:         postgres.NewUserPostgres(db),
 	}
 }
