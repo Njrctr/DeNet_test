@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"context"
@@ -7,11 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Njrctr/DeNet_test/models"
-	handler "github.com/Njrctr/DeNet_test/pkg/handlers"
-	"github.com/Njrctr/DeNet_test/pkg/repository"
-	"github.com/Njrctr/DeNet_test/pkg/repository/postgres"
-	"github.com/Njrctr/DeNet_test/pkg/service"
+	handler "github.com/Njrctr/DeNet_test/internal/handlers"
+	"github.com/Njrctr/DeNet_test/internal/models"
+	"github.com/Njrctr/DeNet_test/internal/repository"
+	"github.com/Njrctr/DeNet_test/internal/repository/postgres"
+	"github.com/Njrctr/DeNet_test/internal/service"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -28,8 +28,8 @@ import (
 // @in header
 // @name Authorization
 
-func main() {
-	if err := initConfig(); err != nil {
+func Run(configPath string) {
+	if err := initConfig(configPath); err != nil {
 		logrus.Fatalf("Ошибка инициализации конфига: %v", err)
 	}
 	if err := godotenv.Load(); err != nil {
@@ -72,8 +72,8 @@ func main() {
 	}
 }
 
-func initConfig() error {
-	viper.AddConfigPath("configs")
+func initConfig(confPath string) error {
+	viper.AddConfigPath(confPath)
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
 }
