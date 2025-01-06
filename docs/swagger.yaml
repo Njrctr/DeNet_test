@@ -5,12 +5,24 @@ definitions:
       error:
         type: string
     type: object
+  handlers.getAllTasksResponce:
+    properties:
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
   handlers.leaderboardResponce:
     properties:
       data:
         items:
           $ref: '#/definitions/models.User'
         type: array
+    type: object
+  handlers.taskComplete:
+    properties:
+      task_id:
+        type: integer
     type: object
   models.SignInInput:
     properties:
@@ -32,10 +44,40 @@ definitions:
     - password
     - username
     type: object
+  models.Task:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      price:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.TaskCreate:
+    properties:
+      description:
+        type: string
+      price:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
   models.User:
     properties:
       balance:
         type: integer
+      id:
+        type: integer
+      refer_code:
+        type: string
+      refer_from:
+        type: string
+      username:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -122,6 +164,79 @@ paths:
       summary: SignUp
       tags:
       - Auth
+  /task/all:
+    get:
+      consumes:
+      - application/json
+      description: get all tasks
+      operationId: get-all-tasks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.getAllTasksResponce'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Get All Tasks
+      tags:
+      - Tasks
+  /task/create:
+    post:
+      consumes:
+      - application/json
+      description: create task
+      operationId: create-task
+      parameters:
+      - description: task data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create task
+      tags:
+      - Tasks
   /users/{id}/status:
     get:
       consumes:
@@ -162,6 +277,52 @@ paths:
       summary: Get User
       tags:
       - Users
+  /users/{id}/task/complete:
+    post:
+      consumes:
+      - application/json
+      description: complete task
+      operationId: complete-task
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: task id
+        in: body
+        name: task_id
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.taskComplete'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Complete task
+      tags:
+      - Tasks
   /users/leaderboard:
     get:
       consumes:
