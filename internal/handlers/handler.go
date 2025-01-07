@@ -33,14 +33,13 @@ func (h *Handler) InitRouters() *gin.Engine {
 		id := users.Group("/:id")
 		{
 			id.GET("/status", h.userInfo)
-			// id.POST("/referrer", h.referrer)
+			id.POST("/referrer", h.userReferrerCode)
 
 			task := id.Group("/task")
 			{
 				task.POST("/complete", h.taskComplete)
 			}
 		}
-
 		users.GET("/leaderboard", h.usersLeaderboard)
 	}
 

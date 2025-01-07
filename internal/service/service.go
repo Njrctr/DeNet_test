@@ -20,6 +20,7 @@ type Task interface {
 	CreateTask(task models.TaskCreate) (int, error)
 	CompleteTask(userId, taskId int) error
 	GetAllTasks() ([]models.Task, error)
+	ReferrerCode(userId int, refCode string) error
 }
 
 type Service struct {

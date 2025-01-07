@@ -91,20 +91,37 @@ func (r *TaskPostgres) GetAllTasks() ([]models.Task, error) {
 	return tasks, nil
 }
 
-func (r *TaskPostgres) referralReward(ref_code *string, price int) error {
+func (r *TaskPostgres) referralReward(ref_id *int, price int) error {
 	var refId int
-	referalQuery := fmt.Sprintf("SELECT id FROM %s WHERE refer_code=$1", usersTable)
-	if err := r.db.Get(&refId, referalQuery, ref_code); err != nil {
-		return fmt.Errorf("user with refer_code \"%s\" not found", *ref_code)
+	referalQuery := fmt.Sprintf("SELECT id FROM %s WHERE id=$1", usersTable)
+	if err := r.db.Get(&refId, referalQuery, ref_id); err != nil {
+		return fmt.Errorf("user with id \"%d\" not found", *ref_id)
 	}
 
 	rewardCount := utils.Reward(price)
-	rewardQuery := fmt.Sprintf("UPDATE %s SET balance=balance+$1 WHERE refer_code=$2", usersTable)
-	_, err := r.db.Exec(rewardQuery, rewardCount, *ref_code)
+	rewardQuery := fmt.Sprintf("UPDATE %s SET balance=balance+$1 WHERE id=$2", usersTable)
+	_, err := r.db.Exec(rewardQuery, rewardCount, *ref_id)
 	if err != nil {
 		return err
 	}
 
 	logrus.Printf("user %d Referral reward: %d", refId, rewardCount)
+	return nil
+}
+
+func (r *TaskPostgres) ReferrerCode(userId int, refCode string) error {
+	var refId int
+	referQuery := fmt.Sprintf("SELECT id FROM %s WHERE refer_code=$1", usersTable)
+	err := r.db.Get(&refId, referQuery, refCode)
+	if err != nil {
+		return fmt.Errorf("user with refer_code \"%s\" not found", refCode)
+	}
+
+	query := fmt.Sprintf("UPDATE %s SET refer_from=$1 WHERE id=$2", usersTable)
+	_, err = r.db.Exec(query, refId, userId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

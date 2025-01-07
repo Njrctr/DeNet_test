@@ -24,3 +24,7 @@ func (s *TaskService) CompleteTask(userId, taskId int) error {
 func (s *TaskService) GetAllTasks() ([]models.Task, error) {
 	return s.repo.GetAllTasks()
 }
+
+func (s *TaskService) ReferrerCode(userId int, refCode string) error {
+	return s.repo.ReferrerCode(userId, refCode)
+}
