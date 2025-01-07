@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API Server for Wallet",
-        "title": "Wallet API",
+        "description": "API Server for DeNet",
+        "title": "DeNet API",
         "contact": {},
         "version": "1.0"
     },
@@ -292,6 +292,77 @@
                 }
             }
         },
+        "/users/{id}/referrer": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "input refer code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Refer code",
+                "operationId": "refer-code",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "refer code",
+                        "name": "refer_code",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.referalCode"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}/status": {
             "get": {
                 "security": [
@@ -457,6 +528,14 @@
                 }
             }
         },
+        "handlers.referalCode": {
+            "type": "object",
+            "properties": {
+                "referal_code": {
+                    "type": "string"
+                }
+            }
+        },
         "handlers.taskComplete": {
             "type": "object",
             "properties": {
@@ -542,7 +621,7 @@
                     "type": "string"
                 },
                 "refer_from": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"

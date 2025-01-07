@@ -19,6 +19,11 @@ definitions:
           $ref: '#/definitions/models.User'
         type: array
     type: object
+  handlers.referalCode:
+    properties:
+      referal_code:
+        type: string
+    type: object
   handlers.taskComplete:
     properties:
       task_id:
@@ -75,15 +80,15 @@ definitions:
       refer_code:
         type: string
       refer_from:
-        type: string
+        type: integer
       username:
         type: string
     type: object
 host: localhost:8080
 info:
   contact: {}
-  description: API Server for Wallet
-  title: Wallet API
+  description: API Server for DeNet
+  title: DeNet API
   version: "1.0"
 paths:
   /auth/sign-in:
@@ -237,6 +242,52 @@ paths:
       summary: Create task
       tags:
       - Tasks
+  /users/{id}/referrer:
+    post:
+      consumes:
+      - application/json
+      description: input refer code
+      operationId: refer-code
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: refer code
+        in: body
+        name: refer_code
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.referalCode'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Refer code
+      tags:
+      - Users
   /users/{id}/status:
     get:
       consumes:
