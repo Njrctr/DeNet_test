@@ -30,7 +30,7 @@ func (r *UserPostgres) GetUserInfo(userId int) (models.User, error) {
 func (r *UserPostgres) GetUsersLeaderboard() ([]models.User, error) {
 	var lists []models.User
 
-	query := fmt.Sprintf("SELECT id, username, balance FROM %s ORDER BY balance DESC", usersTable)
+	query := fmt.Sprintf("SELECT id, username, balance, refer_code, refer_from FROM %s ORDER BY balance DESC", usersTable)
 	err := r.db.Select(&lists, query)
 
 	return lists, err

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Njrctr/DeNet_test/internal/models"
+	"github.com/Njrctr/DeNet_test/pkg/utils"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -17,9 +18,10 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 
 func (a *AuthPostgres) CreateUser(user models.SignUpInput) (int, error) {
 	var userId int
-	query := fmt.Sprintf("INSERT INTO %s (username, password_hash) VALUES ($1, $2) RETURNING id", usersTable)
+	query := fmt.Sprintf("INSERT INTO %s (username, password_hash, refer_code) VALUES ($1, $2, $3) RETURNING id", usersTable)
 
-	result := a.db.QueryRow(query, user.Username, user.Password)
+	referCode := utils.RandStringBytes()
+	result := a.db.QueryRow(query, user.Username, user.Password, referCode)
 	if err := result.Scan(&userId); err != nil {
 		value, ok := customErrors[err.Error()]
 		if ok {
